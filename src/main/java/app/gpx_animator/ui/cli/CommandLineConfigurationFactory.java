@@ -144,7 +144,12 @@ public final class CommandLineConfigurationFactory {
                             }
                             exit();
                         }
-                        case INPUT -> inputGpxList.add(args[++i]);
+                        case INPUT -> {
+                            inputGpxList.add(args[++i]);
+                            while (!args[i + 1].startsWith("--") && args[i + 1].endsWith(".gpx")) {
+                                inputGpxList.add(args[++i]);
+                            }
+                        }
                         case TRACK_ICON -> trackIconList.add(new TrackIcon(args[++i]));
                         case TRACK_ICON_FILE -> inputIconList.add(args[++i]);
                         case TRACK_ICON_MIRROR -> mirrorTrackIconList.add(true);

@@ -12,27 +12,12 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.Locale;
-import java.util.regex.Matcher;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 final class CommandLineIT {
 
     private MemoryAppender memoryAppender = null;
-
-    private String checkFileSeparator(@SuppressWarnings("SameParameterValue") final String path) {
-        return System.getProperty("os.name").toLowerCase(Locale.getDefault()).startsWith("windows")
-                ? path.replaceAll("/", Matcher.quoteReplacement(File.separator))
-                : path;
-    }
-
-    private String getTemporaryOutputFile() throws IOException {
-        final var output = File.createTempFile("gpx-animator-test_", ".mp4");
-        output.deleteOnExit();
-        return output.getAbsolutePath();
-    }
 
     private void assertDone() {
         final var done = memoryAppender.search("Done", Level.INFO).get(0).getMessage().contains("Movie written to");
@@ -51,9 +36,9 @@ final class CommandLineIT {
 
     @Test
     void testBasicCommandLine() throws Exception {
-        final var outputFile = getTemporaryOutputFile();
-        final var args = new String[] {
-                "--input", checkFileSeparator("./src/test/resources/gpx/bikeride.gpx"),
+        final var outputFile = FileTestHelper.getTemporaryOutputFile();
+        final var args = new String[]{
+                "--input", FileTestHelper.checkFileSeparator("./src/test/resources/gpx/bikeride.gpx"),
                 "--output", outputFile
         };
 
