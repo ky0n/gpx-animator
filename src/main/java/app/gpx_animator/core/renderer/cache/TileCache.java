@@ -18,9 +18,6 @@ package app.gpx_animator.core.renderer.cache;
 import app.gpx_animator.core.Constants;
 import app.gpx_animator.core.UserException;
 import app.gpx_animator.core.preferences.Preferences;
-
-import java.nio.file.Files;
-
 import org.jetbrains.annotations.NonNls;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,8 +26,11 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.URI;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
@@ -106,7 +106,7 @@ public final class TileCache {
         return size;
     }
 
-    public static BufferedImage getTile(final String url, final String userAgent, final String tileCacheDir, final Long tileCacheTimeLimit)
+    public static BufferedImage getTile(final String url, final String referer, final String userAgent, final String tileCacheDir, final Long tileCacheTimeLimit)
         throws UserException {
 
         BufferedImage image;
@@ -115,32 +115,41 @@ public final class TileCache {
             try {
                 image = cachedGetTile(url, userAgent, tileCacheDir, tileCacheTimeLimit);
             } catch (final UserException e) {
-                image = unCachedGetTile(url, userAgent);
+                image = unCachedGetTile(url, userAgent, referer);
             }
         } else {
-            image = unCachedGetTile(url, userAgent);
+            image = unCachedGetTile(url, userAgent, referer);
         }
         return image;
     }
 
-    private static BufferedImage unCachedGetTile(final String url, final String userAgent) throws UserException {
+    private static BufferedImage unCachedGetTile(final String urlString, final String userAgent, final String referer) throws UserException {
         BufferedImage mapTile;
-
-        if (!userAgent.isBlank()) {
-            System.setProperty("http.agent", userAgent);
-        } else {
-            System.setProperty("http.agent", Constants.USER_AGENT);
-        }
         try {
-            mapTile = ImageIO.read(URI.create(url).toURL());
+            final var url = URI.create(urlString).toURL();
+            final var connection = getHttpURLConnection(userAgent, referer, url);
+            mapTile = ImageIO.read(connection.getInputStream());
         } catch (final IOException e) {
             throw new UserException(String.format("error getting tile %s: %s", url, e.getCause()), e);
         }
         if (mapTile == null) {
-            throw new UserException("could not get tile ".concat(url));
+            throw new UserException("could not get tile ".concat(urlString));
         }
 
         return mapTile;
+    }
+
+    private static HttpURLConnection getHttpURLConnection(String userAgent, String referer, URL url) throws IOException {
+        final var connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestProperty("Referer", referer);
+        if (!userAgent.isBlank()) {
+            //System.setProperty("http.agent", userAgent);
+            connection.setRequestProperty("User-Agent", userAgent);
+        } else {
+            //System.setProperty("http.agent", Constants.USER_AGENT);
+            connection.setRequestProperty("User-Agent", Constants.USER_AGENT);
+        }
+        return connection;
     }
 
     private static BufferedImage cachedGetTile(final String url, final String userAgent, final String tileCacheDir,

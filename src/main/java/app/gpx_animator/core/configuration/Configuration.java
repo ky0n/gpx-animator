@@ -79,6 +79,7 @@ public final class Configuration {
     private String tmsUrlTemplate;
     private String tmsApiKey;
     private String tmsUserAgent;
+    private String tmsReferer;
 
     private boolean skipIdle;
 
@@ -155,7 +156,7 @@ public final class Configuration {
             final Integer viewportWidth, final Integer viewportHeight, final Integer viewportInertia,
             final Double speedup, final long tailDuration, final Color tailColor, final boolean tailColorFadeout, final double fps,
             final Long totalTime, final float backgroundMapVisibility, final String tmsUrlTemplate, final String tmsApiKey, final String tmsUserAgent,
-            final boolean skipIdle, final Color backgroundColor, final File backgroundImage, final Color flashbackColor,
+            final String tmsReferer, final boolean skipIdle, final Color backgroundColor, final File backgroundImage, final Color flashbackColor,
             final Long flashbackDuration, final boolean preDrawTrack, final Long keepFirstFrame, final Long keepLastFrame, final File output,
             final VideoCodec videoCodec, final String attribution, final String information, final SpeedUnit speedUnit, final Font font,
             final Double markerSize, final Font waypointFont, final Double waypointSize, final Double minLon, final Double maxLon,
@@ -185,6 +186,7 @@ public final class Configuration {
         this.tmsUrlTemplate = tmsUrlTemplate;
         this.tmsApiKey = tmsApiKey;
         this.tmsUserAgent = tmsUserAgent;
+        this.tmsReferer = tmsReferer;
         this.skipIdle = skipIdle;
         this.preDrawTrack = preDrawTrack;
         this.backgroundColor = backgroundColor;
@@ -299,6 +301,10 @@ public final class Configuration {
 
     public String getTmsUserAgent() {
         return tmsUserAgent;
+    }
+
+    public String getTmsReferer() {
+        return null;
     }
 
     public boolean isSkipIdle() {
@@ -503,6 +509,7 @@ public final class Configuration {
         private String tmsUrlTemplate = "";
         private String tmsApiKey = "";
         private String tmsUserAgent = "";
+        private String tmsReferer = "";
         private boolean skipIdle = true;
         private boolean preDrawTrack = false;
         private Color backgroundColor = DEFAULT_BACKGROUND_COLOR;
@@ -547,7 +554,7 @@ public final class Configuration {
                     margin, width, height, zoom,
                     viewportWidth, viewportHeight, viewportInertia,
                     speedup, tailDuration, tailColor, tailColorFadeout, fps, totalTime,
-                    backgroundMapVisibility, tmsUrlTemplate, tmsApiKey, tmsUserAgent,
+                    backgroundMapVisibility, tmsUrlTemplate, tmsApiKey, tmsUserAgent, tmsReferer,
                     skipIdle, backgroundColor, backgroundImage, flashbackColor, flashbackDuration,
                     preDrawTrack, keepFirstFrame, keepLastFrame, output, videoCodec, attribution, information,
                     speedUnit, font, markerSize, waypointFont, waypointSize,
@@ -646,6 +653,11 @@ public final class Configuration {
 
         public Builder tmsUserAgent(final String tmsUserAgent) {
             this.tmsUserAgent = tmsUserAgent;
+            return this;
+        }
+
+        public Builder tmsReferer(final String tmsReferer) {
+            this.tmsReferer = tmsReferer;
             return this;
         }
 

@@ -44,6 +44,7 @@ public final class BackgroundMapPlugin implements RendererPlugin {
     private final String tmsUrlTemplate;
     private final String tmsApiKey;
     private final String tmsUserAgent;
+    private final String referer;
     private final float backgroundMapVisibility;
 
     private Integer zoom;
@@ -58,6 +59,7 @@ public final class BackgroundMapPlugin implements RendererPlugin {
         tmsUrlTemplate = configuration.getTmsUrlTemplate();
         tmsApiKey = configuration.getTmsApiKey();
         tmsUserAgent = configuration.getTmsUserAgent();
+        referer = configuration.getTmsReferer();
         backgroundMapVisibility = configuration.getBackgroundMapVisibility();
     }
 
@@ -137,7 +139,7 @@ public final class BackgroundMapPlugin implements RendererPlugin {
 
                 context.setProgress1((int) (100.0 * i / total), String.format(resourceBundle.getString("map.loadingtiles.progress"), i, total));
 
-                final var tile = TileCache.getTile(url, tmsUserAgent, tileCacheDir, tileCacheTimeLimit);
+                final var tile = TileCache.getTile(url, referer, tmsUserAgent, tileCacheDir, tileCacheTimeLimit);
 
                 // convert to RGB format
                 final var tile1 = new BufferedImage(tile.getWidth(), tile.getHeight(), BufferedImage.TYPE_INT_RGB);
