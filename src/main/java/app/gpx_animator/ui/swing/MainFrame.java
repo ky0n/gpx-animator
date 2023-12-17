@@ -362,6 +362,7 @@ public final class MainFrame extends JFrame {
         tabbedPane.addChangeListener(e -> mntmRemoveTrack.setEnabled(tabbedPane.getSelectedIndex() > 0));
 
         final var generalScrollPane = new JScrollPane();
+        generalScrollPane.getVerticalScrollBar().setUnitIncrement(8);
         tabbedPane.addTab(resourceBundle.getString("ui.mainframe.tab.general"), generalScrollPane);
 
         generalSettingsPanel = new GeneralSettingsPanel() {

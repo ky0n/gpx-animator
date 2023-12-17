@@ -540,13 +540,13 @@ public final class Renderer {
                              @NonNull final TrackConfiguration trackConfiguration) {
 
         final var trimGpxStart = trackConfiguration.getTrimGpxStart();
-        if (trimGpxStart != null && trimGpxStart > 0 && timePointMap.size() > 0) {
+        if (trimGpxStart != null && trimGpxStart > 0 && !timePointMap.isEmpty()) {
             final Long skipToTime = timePointMap.firstKey() + trimGpxStart;
             timePointMap.entrySet().removeIf(e -> e.getKey() < skipToTime);
         }
 
         final var trimGpxEnd = trackConfiguration.getTrimGpxEnd();
-        if (trimGpxEnd != null && trimGpxEnd > 0 && timePointMap.size() > 0) {
+        if (trimGpxEnd != null && trimGpxEnd > 0 && !timePointMap.isEmpty()) {
             final Long skipAfterTime = timePointMap.lastKey() - trimGpxEnd;
             timePointMap.entrySet().removeIf(e -> e.getKey() > skipAfterTime);
         }
